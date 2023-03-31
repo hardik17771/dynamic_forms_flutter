@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 void main()=> runApp(ProductForm());
+
+
+
 class Product {
   String name;
   double price;
@@ -14,8 +17,9 @@ class ProductForm extends StatefulWidget {
 }
 
 class _ProductFormState extends State<ProductForm> {
-  List<Product> _products = [Product(name: "", price: 0, quantity: 0)];
+  List<Product> _products = [Product(name: "", price: 0, quantity: 1)];
   double _totalAmount = 0;
+  final List<int> _quantityValues = List.generate(10, (index) => index + 1);
 
   void _updateTotalAmount() {
     double total = 0;
@@ -29,14 +33,20 @@ class _ProductFormState extends State<ProductForm> {
 
   void _addProduct() {
     setState(() {
-      _products.add(Product(name: "", price: 0, quantity: 0));
+      _products.add(Product(name: "", price: 0, quantity: 1));
     });
+  }
+
+  void _deleteProduct(int index) {
+    setState(() {
+      _products.removeAt(index);
+    });
+    _updateTotalAmount();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       home: Scaffold(
         appBar: AppBar(
           title: Text('Product Form'),
@@ -53,7 +63,16 @@ class _ProductFormState extends State<ProductForm> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Product ${index + 1}'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Product ${index + 1}'),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () => _deleteProduct(index),
+                              ),
+                            ],
+                          ),
                           SizedBox(height: 8),
                           TextFormField(
                             decoration: InputDecoration(
@@ -81,15 +100,20 @@ class _ProductFormState extends State<ProductForm> {
                             },
                           ),
                           SizedBox(height: 8),
-                          TextFormField(
+                          DropdownButtonFormField(
                             decoration: InputDecoration(
                               hintText: 'Quantity',
                             ),
-                            initialValue: _products[index].quantity.toString(),
-                            keyboardType: TextInputType.number,
+                            value: _products[index].quantity,
+                            items: _quantityValues
+                                .map((value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(value.toString()),
+                            ))
+                                .toList(),
                             onChanged: (value) {
                               setState(() {
-                                _products[index].quantity = int.parse(value);
+                                _products[index].quantity = value as int;
                               });
                               _updateTotalAmount();
                             },
@@ -102,7 +126,7 @@ class _ProductFormState extends State<ProductForm> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(0),
+              padding: EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
