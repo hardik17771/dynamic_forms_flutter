@@ -17,7 +17,7 @@ class ProductForm extends StatefulWidget {
 }
 
 class _ProductFormState extends State<ProductForm> {
-  List<Product> _products = [Product(name: "", price: 0, quantity: 1)];
+  final List<Product> _products = [Product(name: "", price: 0, quantity: 1)];
   double _totalAmount = 0;
   final List<int> _quantityValues = List.generate(10, (index) => index + 1);
 
@@ -128,7 +128,7 @@ class _ProductFormState extends State<ProductForm> {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text('Total Amount:'),
                   Text('\$$_totalAmount'),
